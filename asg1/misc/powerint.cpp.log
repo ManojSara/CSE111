@@ -1,0 +1,10 @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ mkc: starting powerint.cpp
+$Id: powerint.cpp,v 1.15 2022-01-07 12:53:31-08 - - $
+checksource powerint.cpp
+checksource: TOTAL COMPLAINTS: 0
+powerint.cpp: $Id: powerint.cpp,v 1.15 2022-01-07 12:53:31-08 - - $
+cpplint.py.perl powerint.cpp
+Done processing powerint.cpp
+g++ -Wall -Wextra -Wpedantic -Wshadow -fdiagnostics-color=never -std=gnu++2a -Wold-style-cast -pthread -g -O0 powerint.cpp -o powerint -lm
+rm -f powerint.o
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ mkc: finished powerint.cpp

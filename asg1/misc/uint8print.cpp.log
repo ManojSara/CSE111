@@ -1,0 +1,13 @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ mkc: starting uint8print.cpp
+$Id: uint8print.cpp,v 1.6 2022-01-07 13:20:55-08 - - $
+checksource uint8print.cpp
+checksource: TOTAL COMPLAINTS: 0
+uint8print.cpp: $Id: uint8print.cpp,v 1.6 2022-01-07 13:20:55-08 - - $
+cpplint.py.perl uint8print.cpp
+Done processing uint8print.cpp
+g++ -Wall -Wextra -Wpedantic -Wshadow -fdiagnostics-color=never -std=gnu++2a -Wold-style-cast -pthread -g -O0 uint8print.cpp -o uint8print -lm
+uint8print.cpp:65:1: warning: multi-line comment [-Wcomment]
+   65 | //TEST// for cmd in "uint8print -8" \
+      | ^
+rm -f uint8print.o
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ mkc: finished uint8print.cpp

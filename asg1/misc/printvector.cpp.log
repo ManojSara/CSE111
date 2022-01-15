@@ -1,0 +1,10 @@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ mkc: starting printvector.cpp
+$Id: printvector.cpp,v 1.7 2022-01-12 17:25:06-08 - - $
+checksource printvector.cpp
+checksource: TOTAL COMPLAINTS: 0
+printvector.cpp: $Id: printvector.cpp,v 1.7 2022-01-12 17:25:06-08 - - $
+cpplint.py.perl printvector.cpp
+Done processing printvector.cpp
+g++ -Wall -Wextra -Wpedantic -Wshadow -fdiagnostics-color=never -std=gnu++2a -Wold-style-cast -pthread -g -O0 printvector.cpp -o printvector -lm
+rm -f printvector.o
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ mkc: finished printvector.cpp

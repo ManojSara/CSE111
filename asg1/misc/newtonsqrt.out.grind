@@ -1,0 +1,15 @@
+==18711== Memcheck, a memory error detector
+==18711== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==18711== Using Valgrind-3.17.0 and LibVEX; rerun with -h for copyright info
+==18711== Command: newtonsqrt 2 10 100 1000 1e6 1e1000 foo
+==18711== Parent PID: 18709
+==18711== 
+==18711== 
+==18711== HEAP SUMMARY:
+==18711==     in use at exit: 0 bytes in 0 blocks
+==18711==   total heap usage: 21 allocs, 21 frees, 793 bytes allocated
+==18711== 
+==18711== All heap blocks were freed -- no leaks are possible
+==18711== 
+==18711== For lists of detected and suppressed errors, rerun with: -s
+==18711== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
