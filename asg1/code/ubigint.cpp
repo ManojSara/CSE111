@@ -17,7 +17,7 @@ ubigint::ubigint (unsigned long that): uvalue (that) {
    while (that != 0)
    {
       digit = that % 10;
-      ubi.insert(ubi.end(), digit);
+      ubi.push_back(digit);
       that /= 10;
    }
    //DEBUGF ('~', this << " -> " << uvalue)
@@ -30,7 +30,7 @@ ubigint::ubigint (const string& that) {
    while (number != 0)
    {
       digit = number % 10;
-      ubi.insert(ubi.end(), digit);
+      ubi.push_back(digit);
       number /= 10;
    }
    //DEBUGF ('~', "that = \"" << that << "\"");
@@ -85,15 +85,59 @@ ubigint ubigint::operator- (const ubigint& that) const {
 }
 
 ubigint ubigint::operator* (const ubigint& that) const {
-   return ubigint (uvalue * that.uvalue);
+   ubigint result;
+   result.uvalue.reserve(uvalue.size() + that.uvalue.size());
+   int carry = 0;
+   int digit = 0;
+   for (int i = 0; i < uvalue.size(); i++)
+   {
+      carry = 0;
+      for (int j = 0; j < that.uvalue.size(); j++)
+      {
+         digit = result.uvalue[i + j] + (uvalue[i] * that.uvalue[j]) + carry;
+         result.uvalue[i + j] = digit % 10;
+         carry = digit / 10;
+      }
+      result.uvalue[i + that.uvalue.size()] = carry;
+   }
+   return result;
 }
 
 void ubigint::multiply_by_2() {
-   uvalue *= 2;
+   int carry = 0;
+   int digit = 0;
+   for (int i = 0; i < uvalue.size(); i++)
+   {
+      digit = (uvalue[i] * 2) + carry;
+      carry = 0;
+      if (digit >= 10)
+      {
+         digit -= 10;
+         carry = 1;
+      }
+      uvalue[i] = digit;
+   }
+   if (carry)
+   {
+      uvalue.push_back(1);
+   }
+   return;
 }
 
 void ubigint::divide_by_2() {
-   uvalue /= 2;
+   for (int i = 0; i < uvalue.size(); i++)
+   {
+      uvalue[i] /= 2;
+      if (uvalue[i + 1] % 2 == 1)
+      {
+         uvalue[i] += 5;
+      }
+   }
+   while (uvalue.back() == 0)
+   {
+      uvalue.pop_back();
+   }
+   return;
 }
 
 
@@ -176,7 +220,7 @@ void ubigint::print() const {
 
 ostream& operator<< (ostream& out, const ubigint& that) { 
    string numbers = "ubigint(";
-   for (ubigvalue_t::iterator it = that.uvalue.end(); it != that.uvalue.begin(); it--))
+   for (ubigvalue_t::iterator it = that.uvalue.end(); it != that.uvalue.begin(); it--)
    {
       numbers +=  *it + " ";
    }
