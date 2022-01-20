@@ -20,7 +20,6 @@ ubigint::ubigint (unsigned long that): uvalue (that) {
       ubi.push_back(digit);
       that /= 10;
    }
-   //DEBUGF ('~', this << " -> " << uvalue)
 }
 
 ubigint::ubigint (const string& that) {
@@ -33,11 +32,11 @@ ubigint::ubigint (const string& that) {
       ubi.push_back(digit);
       number /= 10;
    }
-   //DEBUGF ('~', "that = \"" << that << "\"");
+   DEBUGF ('~', "that = \"" << that << "\"");
 }
 
 ubigint ubigint::operator+ (const ubigint& that) const {
-   ubigint result; 
+   ubigint result;
    uint8_t length = uvalue.size();
    if (that.uvalue.size() > length)
    {
@@ -56,8 +55,8 @@ ubigint ubigint::operator+ (const ubigint& that) const {
       }
       result.uvalue.push_back(total);
    }
-   //DEBUGF ('u', *this << "+" << that);
-   //DEBUGF ('u', result);
+   DEBUGF ('u', *this << "+" << that);
+   DEBUGF ('u', result);
    return result;
 }
 
@@ -163,8 +162,8 @@ quo_rem udivide (const ubigint& dividend, const ubigint& divisor_) {
       divisor.divide_by_2();
       power_of_2.divide_by_2();
    }
-   //DEBUGF ('/', "quotient = " << quotient);
-   //DEBUGF ('/', "remainder = " << remainder);
+   DEBUGF ('/', "quotient = " << quotient);
+   DEBUGF ('/', "remainder = " << remainder);
    return {.quotient = quotient, .remainder = remainder};
 }
 
@@ -215,7 +214,7 @@ bool ubigint::operator< (const ubigint& that) const {
 }
 
 void ubigint::print() const {
-   //DEBUGF ('p', this << " -> " << *this);
+   DEBUGF ('p', this << " -> " << *this);
    cout << *this;
 }
 

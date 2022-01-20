@@ -56,7 +56,6 @@ void do_dup (bigint_stack& stack, const char) {
 
 void do_printall (bigint_stack& stack, const char) {
    DEBUGF ('d', "");
-   stack.clear();
    for (const auto& elem: stack) {
       elem.print();
       cout << endl;
@@ -65,7 +64,6 @@ void do_printall (bigint_stack& stack, const char) {
 
 void do_print (bigint_stack& stack, const char) {
    DEBUGF ('d', "");
-   stack.clear();
    if (stack.size() < 1) throw ydc_error ("stack empty");
    stack.top().print();
    cout << endl;
