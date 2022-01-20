@@ -38,14 +38,14 @@ ubigint::ubigint (const string& that) {
 
 ubigint ubigint::operator+ (const ubigint& that) const {
    ubigint result; 
-   int length = uvalue.size();
+   uint8_t length = uvalue.size();
    if (that.uvalue.size() > length)
    {
       length = that.uvalue.size();
    }
    int remainder = 0;
    int total = 0;
-   for (int i = 0; i < length; i++)
+   for (uint8_t i = 0; i < length; i++)
    {
       total = uvalue[i] + that.uvalue[i] + remainder;
       remainder = 1;
@@ -65,10 +65,10 @@ ubigint ubigint::operator- (const ubigint& that) const {
    ubigint result;
    int remainder = 0;
    int total = 0;
-   for (int i = 0; i < uvalue.size(); i++)
+   for (uint8_t i = 0; i < uvalue.size(); i++)
    {
       total = uvalue[i] - that.uvalue[i] - remainder;
-      reaminder = 0;
+      remainder = 0;
       if (total < 0)
       {
          total += 10;
@@ -89,12 +89,13 @@ ubigint ubigint::operator* (const ubigint& that) const {
    result.uvalue.reserve(uvalue.size() + that.uvalue.size());
    int carry = 0;
    int digit = 0;
-   for (int i = 0; i < uvalue.size(); i++)
+   for (uint8_t i = 0; i < uvalue.size(); i++)
    {
       carry = 0;
-      for (int j = 0; j < that.uvalue.size(); j++)
+      for (uint8_t j = 0; j < that.uvalue.size(); j++)
       {
-         digit = result.uvalue[i + j] + (uvalue[i] * that.uvalue[j]) + carry;
+         digit = result.uvalue[i + j] +
+                 (uvalue[i] * that.uvalue[j]) + carry;
          result.uvalue[i + j] = digit % 10;
          carry = digit / 10;
       }
@@ -106,7 +107,7 @@ ubigint ubigint::operator* (const ubigint& that) const {
 void ubigint::multiply_by_2() {
    int carry = 0;
    int digit = 0;
-   for (int i = 0; i < uvalue.size(); i++)
+   for (uint8_t i = 0; i < uvalue.size(); i++)
    {
       digit = (uvalue[i] * 2) + carry;
       carry = 0;
@@ -125,7 +126,7 @@ void ubigint::multiply_by_2() {
 }
 
 void ubigint::divide_by_2() {
-   for (int i = 0; i < uvalue.size(); i++)
+   for (uint8_t i = 0; i < uvalue.size(); i++)
    {
       uvalue[i] /= 2;
       if (uvalue[i + 1] % 2 == 1)
@@ -180,7 +181,7 @@ bool ubigint::operator== (const ubigint& that) const {
    {
       return false;
    }
-   for (int i = 0; i < uvalue.size(); i++)
+   for (uint8_t i = 0; i < uvalue.size(); i++)
    {
       if (uvalue[i] != that.uvalue[i])
       {
@@ -199,7 +200,7 @@ bool ubigint::operator< (const ubigint& that) const {
    {
       return false;
    }
-   for (int i = 0; i < uvalue.size(); i++)
+   for (uint8_t i = 0; i < uvalue.size(); i++)
    {
       if (uvalue[i] < that.uvalue[i])
       {
@@ -215,17 +216,21 @@ bool ubigint::operator< (const ubigint& that) const {
 
 void ubigint::print() const {
    //DEBUGF ('p', this << " -> " << *this);
-   cout << uvalue;
+   cout << *this;
 }
 
 ostream& operator<< (ostream& out, const ubigint& that) { 
-   string numbers = "ubigint(";
-   for (ubigvalue_t::iterator it = that.uvalue.end(); it != that.uvalue.begin(); it--)
+   int inc = 0;
+   for (auto rit = that.uvalue.rbegin();
+        rit != that.uvalue.rend(); rit++)
    {
-      numbers +=  *it + " ";
+      out << *rit;
+      inc++;
+      if (inc == 68) {
+         out << "/\n";
+         inc = 0;
+      }
    }
-   numbers.pop_back();
-   numbers += ")";
-   return out << numbers;
+   return out;
 }
 
