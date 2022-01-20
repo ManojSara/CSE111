@@ -5,28 +5,54 @@
 #include <exception>
 #include <stack>
 #include <stdexcept>
+#include <string>
 using namespace std;
 
 #include "debug.h"
 #include "ubigint.h"
 
 ubigint::ubigint (unsigned long that): uvalue (that) {
+   ubigvalue_t ubi;
+   uint8_t digit = 0;
+   while (that != 0)
+   {
+      digit = that % 10;
+      ubi.insert(*ubi.end(), digit);
+      that /= 10;
+   }
    DEBUGF ('~', this << " -> " << uvalue)
 }
 
-ubigint::ubigint (const string& that): uvalue(0) {
-   DEBUGF ('~', "that = \"" << that << "\"");
+ubigint::ubigint (const string& that) {
+   ubigvalue_t ubi;
+   uint8_t dig = 0;
    for (char digit: that) {
-      if (not isdigit (digit)) {
-         throw invalid_argument ("ubigint::ubigint(" + that + ")");
-      }
-      uvalue = uvalue * 10 + digit - '0';
+      dig = stoi(digit);
+      ubi.insert(*ubi.end(), dig);
    }
+   DEBUGF ('~', "that = \"" << that << "\"");
 }
 
 ubigint ubigint::operator+ (const ubigint& that) const {
+   ubigint result (
+   uint8_t length = uvalue.length();
+   if (that.uvalue.length() > length)
+   {
+      length = that.uvalue.length();
+   }
+   uint8_t remainder = 0;
+   uint8_t total = 0;
+   for uint8_t i = 0; i < length; i++)
+   {
+      total = uvalue[i] + that.uvalue[i] + remainder;
+      if (total >= 10)
+      {
+         remainder = 1;
+         total -= 10;
+      }
+      result[i] = total;
+   }
    DEBUGF ('u', *this << "+" << that);
-   ubigint result (uvalue + that.uvalue);
    DEBUGF ('u', result);
    return result;
 }
