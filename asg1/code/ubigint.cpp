@@ -34,7 +34,7 @@ ubigint::ubigint (const string& that) {
 }
 
 ubigint ubigint::operator+ (const ubigint& that) const {
-   ubigint result (
+   ubigint result = new ubigint(); 
    uint8_t length = uvalue.length();
    if (that.uvalue.length() > length)
    {
@@ -42,15 +42,16 @@ ubigint ubigint::operator+ (const ubigint& that) const {
    }
    uint8_t remainder = 0;
    uint8_t total = 0;
-   for uint8_t i = 0; i < length; i++)
+   for (uint8_t i = 0; i < length; i++)
    {
       total = uvalue[i] + that.uvalue[i] + remainder;
+      remainder = 1;
       if (total >= 10)
       {
          remainder = 1;
          total -= 10;
       }
-      result[i] = total;
+      result.push_back(total);
    }
    DEBUGF ('u', *this << "+" << that);
    DEBUGF ('u', result);
