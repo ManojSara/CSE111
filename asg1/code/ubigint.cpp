@@ -17,32 +17,35 @@ ubigint::ubigint (unsigned long that): uvalue (that) {
    while (that != 0)
    {
       digit = that % 10;
-      ubi.insert(*ubi.end(), digit);
+      ubi.insert(ubi.end(), digit);
       that /= 10;
    }
-   DEBUGF ('~', this << " -> " << uvalue)
+   //DEBUGF ('~', this << " -> " << uvalue)
 }
 
 ubigint::ubigint (const string& that) {
    ubigvalue_t ubi;
-   uint8_t dig = 0;
-   for (char digit: that) {
-      dig = stoi(digit);
-      ubi.insert(*ubi.end(), dig);
+   uint8_t number = stoi(that, nullptr);
+   uint8_t digit = 0;
+   while (number != 0)
+   {
+      digit = number % 10;
+      ubi.insert(ubi.end(), digit);
+      number /= 10;
    }
-   DEBUGF ('~', "that = \"" << that << "\"");
+   //DEBUGF ('~', "that = \"" << that << "\"");
 }
 
 ubigint ubigint::operator+ (const ubigint& that) const {
-   ubigint result = new ubigint(); 
-   uint8_t length = uvalue.length();
-   if (that.uvalue.length() > length)
+   ubigint result; 
+   int length = uvalue.size();
+   if (that.uvalue.size() > length)
    {
-      length = that.uvalue.length();
+      length = that.uvalue.size();
    }
-   uint8_t remainder = 0;
-   uint8_t total = 0;
-   for (uint8_t i = 0; i < length; i++)
+   int remainder = 0;
+   int total = 0;
+   for (int i = 0; i < length; i++)
    {
       total = uvalue[i] + that.uvalue[i] + remainder;
       remainder = 1;
@@ -51,16 +54,34 @@ ubigint ubigint::operator+ (const ubigint& that) const {
          remainder = 1;
          total -= 10;
       }
-      result.push_back(total);
+      result.uvalue.push_back(total);
    }
-   DEBUGF ('u', *this << "+" << that);
-   DEBUGF ('u', result);
+   //DEBUGF ('u', *this << "+" << that);
+   //DEBUGF ('u', result);
    return result;
 }
 
 ubigint ubigint::operator- (const ubigint& that) const {
-   if (*this < that) throw domain_error ("ubigint::operator-(a<b)");
-   return ubigint (uvalue - that.uvalue);
+   ubigint result;
+   int remainder = 0;
+   int total = 0;
+   for (int i = 0; i < uvalue.size(); i++)
+   {
+      total = uvalue[i] - that.uvalue[i] - remainder;
+      reaminder = 0;
+      if (total < 0)
+      {
+         total += 10;
+         remainder = 1;
+      }
+      result.uvalue.push_back(total);
+   }
+   while (result.uvalue.back() == 0)
+   {
+      result.uvalue.pop_back();
+   }
+   //if (*this < that) throw domain_error ("ubigint::operator-(a<b)");
+   return result;
 }
 
 ubigint ubigint::operator* (const ubigint& that) const {
@@ -97,8 +118,8 @@ quo_rem udivide (const ubigint& dividend, const ubigint& divisor_) {
       divisor.divide_by_2();
       power_of_2.divide_by_2();
    }
-   DEBUGF ('/', "quotient = " << quotient);
-   DEBUGF ('/', "remainder = " << remainder);
+   //DEBUGF ('/', "quotient = " << quotient);
+   //DEBUGF ('/', "remainder = " << remainder);
    return {.quotient = quotient, .remainder = remainder};
 }
 
@@ -111,19 +132,56 @@ ubigint ubigint::operator% (const ubigint& that) const {
 }
 
 bool ubigint::operator== (const ubigint& that) const {
-   return uvalue == that.uvalue;
+   if (uvalue.size() != that.uvalue.size())
+   {
+      return false;
+   }
+   for (int i = 0; i < uvalue.size(); i++)
+   {
+      if (uvalue[i] != that.uvalue[i])
+      {
+         return false;
+      }
+   }
+   return true;
 }
 
 bool ubigint::operator< (const ubigint& that) const {
-   return uvalue < that.uvalue;
+   if (uvalue.size() < that.uvalue.size())
+   {
+      return true;
+   }
+   else if (uvalue.size() > that.uvalue.size())
+   {
+      return false;
+   }
+   for (int i = 0; i < uvalue.size(); i++)
+   {
+      if (uvalue[i] < that.uvalue[i])
+      {
+         return true;
+      }
+      else if (uvalue[i] > that.uvalue[i])
+      {
+         return false;
+      }
+   }
+   return false;
 }
 
 void ubigint::print() const {
-   DEBUGF ('p', this << " -> " << *this);
+   //DEBUGF ('p', this << " -> " << *this);
    cout << uvalue;
 }
 
 ostream& operator<< (ostream& out, const ubigint& that) { 
-   return out << "ubigint(" << that.uvalue << ")";
+   string numbers = "ubigint(";
+   for (ubigvalue_t::iterator it = that.uvalue.end(); it != that.uvalue.begin(); it--))
+   {
+      numbers +=  *it + " ";
+   }
+   numbers.pop_back();
+   numbers += ")";
+   return out << numbers;
 }
 

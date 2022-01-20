@@ -30,18 +30,73 @@ bigint bigint::operator- () const {
 }
 
 bigint bigint::operator+ (const bigint& that) const {
-   ubigint result {uvalue + that.uvalue};
+   bigint result;
+   if (is_negative == that.is_negative)
+   {
+      result.uvalue {uvalue + that.uvalue};
+      result.is_negative = is_negative;
+   }
+   else
+   {
+      if (that.uvalue < uvalue)
+      {
+         result.uvalue {uvalue - that.uvalue};
+         result.is_negative = is_negative;
+      }
+      else if (uvalue < that.uvalue) 
+      {
+         result.uvalue {that.uvalue - uvalue};
+         result.is_negative = that.is_negative;
+      }
+      else
+      {
+         result.uvalue {that.uvalue - uvalue};
+         result.is_negative = true;
+      }
+   }
    return result;
 }
 
 bigint bigint::operator- (const bigint& that) const {
-   ubigint result {uvalue - that.uvalue};
+   bigint result;
+   if (is_negative != that.is_negative)
+   {
+      result.uvalue {uvalue + that.uvalue};
+      result.is_negative = is_negative;
+   }
+   else
+   {
+      if (that.uvalue < uvalue)
+      {
+         result.uvalue {uvalue - that.uvalue};
+         result.is_negative = is_negative;
+      }
+      else if (uvalue < that.uvalue)
+      {
+         result.uvalue {that.uvalue - uvalue};
+         result.is_negative = !is_negative;
+      }
+      else
+      {
+         result.uvalue {that.uvalue - uvalue};
+         result.is_negative = true;
+      }
+   }
    return result;
 }
 
 
 bigint bigint::operator* (const bigint& that) const {
-   bigint result {uvalue * that.uvalue};
+   bigint result;
+   result.uvalue {uvalue * that.uvalue};
+   if (is_negative == that.is_negative)
+   {
+      result.is_negative = false;
+   }
+   else
+   {
+      result.is_negative = true;
+   }
    return result;
 }
 
