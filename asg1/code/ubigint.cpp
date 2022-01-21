@@ -44,8 +44,8 @@ ubigint::ubigint (const string& that) {
 
 ubigint ubigint::operator+ (const ubigint& that) const {
    ubigint result;
-   uint8_t length = uvalue.size();
-   uint8_t shortl = that.uvalue.size();
+   unsigned long length = uvalue.size();
+   unsigned long shortl = that.uvalue.size();
    if (that.uvalue.size() > length)
    {
       shortl = length;
@@ -53,7 +53,7 @@ ubigint ubigint::operator+ (const ubigint& that) const {
    }
    int remainder = 0;
    int total = 0;
-   for (uint8_t i = 0; i < length; i++)
+   for (unsigned long i = 0; i < length; i++)
    {
       if (i < shortl)
       {
@@ -92,7 +92,7 @@ ubigint ubigint::operator- (const ubigint& that) const {
    ubigint result;
    int remainder = 0;
    int total = 0;
-   for (uint8_t i = 0; i < uvalue.size(); i++)
+   for (unsigned long i = 0; i < uvalue.size(); i++)
    {
       if (i < that.uvalue.size())
       {
@@ -120,16 +120,20 @@ ubigint ubigint::operator- (const ubigint& that) const {
 
 ubigint ubigint::operator* (const ubigint& that) const {
    ubigint result;
-   for (uint8_t i = 0; i < (uvalue.size() + that.uvalue.size()); i++)
+   for (unsigned long i = 0; i < uvalue.size(); i++)
    {
       result.uvalue.push_back(0);
    }
-   int carry = 0;
-   int digit = 0;
-   for (uint8_t i = 0; i < uvalue.size(); i++)
+   for (unsigned long i = 0; i < that.uvalue.size(); i++)
+   {
+      result.uvalue.push_back(0);
+   }
+   uint8_t carry = 0;
+   uint8_t  digit = 0;
+   for (unsigned long i = 0; i < uvalue.size(); i++)
    {
       carry = 0;
-      for (uint8_t j = 0; j < that.uvalue.size(); j++)
+      for (unsigned long j = 0; j < that.uvalue.size(); j++)
       {
          digit = result.uvalue[i + j] +
                  (uvalue[i] * that.uvalue[j]) + carry;
@@ -151,7 +155,7 @@ void ubigint::multiply_by_2() {
 }
 
 void ubigint::divide_by_2() {
-   for (uint8_t i = 0; i < uvalue.size(); i++)
+   for (unsigned long i = 0; i < uvalue.size(); i++)
    {
       uvalue[i] /= 2;
       if (i < (uvalue.size() - 1))
@@ -209,7 +213,7 @@ bool ubigint::operator== (const ubigint& that) const {
    {
       return false;
    }
-   for (uint8_t i = 0; i < uvalue.size(); i++)
+   for (unsigned long i = 0; i < uvalue.size(); i++)
    {
       if (uvalue[i] != that.uvalue[i])
       {
@@ -228,7 +232,7 @@ bool ubigint::operator< (const ubigint& that) const {
    {
       return false;
    }
-   for (uint8_t i = uvalue.size(); i > 0; i--)
+   for (unsigned long i = uvalue.size(); i > 0; i--)
    {
       if (uvalue[i - 1] < that.uvalue[i - 1])
       {
@@ -250,7 +254,7 @@ void ubigint::print() const {
 ostream& operator<< (ostream& out, const ubigint& that) { 
    int inc = 0;
    for (auto rit = that.uvalue.rbegin();
-        rit != that.uvalue.rend(); rit++)
+      rit != that.uvalue.rend(); rit++)
    {
       out << static_cast<int>(*rit);
       inc++;
