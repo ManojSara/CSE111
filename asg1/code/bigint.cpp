@@ -1,4 +1,5 @@
 // $Id: bigint.cpp,v 1.2 2021-12-28 14:11:26-08 - - $
+// Manoj Sara (msara), Manas Sara (mssara)
 
 #include <cstdlib>
 #include <exception>
@@ -51,7 +52,7 @@ bigint bigint::operator+ (const bigint& that) const {
       else
       {
          result.uvalue = (that.uvalue - uvalue);
-         result.is_negative = true;
+         result.is_negative = false;
       }
    }
    return result;
@@ -79,7 +80,7 @@ bigint bigint::operator- (const bigint& that) const {
       else
       {
          result.uvalue = (that.uvalue - uvalue);
-         result.is_negative = true;
+         result.is_negative = false;
       }
    }
    return result;
