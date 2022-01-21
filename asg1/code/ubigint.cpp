@@ -13,12 +13,11 @@ using namespace std;
 #include "ubigint.h"
 
 ubigint::ubigint (unsigned long that): uvalue (that) {
-   ubigvalue_t ubi;
-   uint8_t digit = 0;
+   int digit = 0;
    do
    {
       digit = that % 10;
-      ubi.push_back(digit);
+      uvalue.push_back(digit);
       that /= 10;
    } while (that != 0);
 }
@@ -115,7 +114,6 @@ ubigint ubigint::operator* (const ubigint& that) const {
 }
 
 void ubigint::multiply_by_2() {
-   cout << *this << endl; // DEBUG
    /* int carry = 0;
    int digit = 0;
    for (uint8_t i = 0; i < uvalue.size(); i++)
@@ -138,18 +136,19 @@ void ubigint::multiply_by_2() {
       uvalue.pop_back();
    } */
    *this = *this + *this;
-   cout << *this << endl; // DEBUG
    return;
 }
 
 void ubigint::divide_by_2() {
-   cout << "im in" << endl; // DEBUG
    for (uint8_t i = 0; i < uvalue.size(); i++)
    {
       uvalue[i] /= 2;
       if (uvalue[i + 1] % 2 == 1)
       {
-         uvalue[i] += 5;
+         if (i < (uvalue.size() - 1))
+         {
+            uvalue[i] += 5;
+         }
       }
    }
    while (uvalue.back() == 0 && uvalue.size() > 1)
@@ -164,34 +163,23 @@ struct quo_rem { ubigint quotient; ubigint remainder; };
 quo_rem udivide (const ubigint& dividend, const ubigint& divisor_) {
    // NOTE: udivide is a non-member function.
    ubigint divisor {divisor_};
-   cout << divisor << endl; // DEBUG
    ubigint zero {0};
    if (divisor == zero) throw domain_error ("udivide by zero");
    ubigint power_of_2 {1};
-   cout << "power" << power_of_2 << endl; // DEBUG
    ubigint quotient {0};
    ubigint remainder {dividend}; // left operand, dividend
    while (divisor < remainder) {
-      cout << "b" << divisor << endl; // DEBUG
       divisor.multiply_by_2();
-      cout << "br" << divisor << endl; // DEBUG
-      cout << "bru" << power_of_2 << endl; // DEBUG
       power_of_2.multiply_by_2();
-      cout << "bruh" << power_of_2 << endl; // DEBUG
    }
-   cout << "bruh?" << endl; // DEBUG
    while (power_of_2 > zero) {
       if (divisor <= remainder) {
-         cout << "bruhhh" << endl; // DEBUG
          remainder = remainder - divisor;
-         cout << "how" << endl; // DEBUG
          quotient = quotient + power_of_2;
       }
-      cout << "cringe" << endl; // DEBUG
       divisor.divide_by_2();
       power_of_2.divide_by_2();
    }
-   cout << "massive L" << endl; // DEBUG
    DEBUGF ('/', "quotient = " << quotient);
    DEBUGF ('/', "remainder = " << remainder);
    return {.quotient = quotient, .remainder = remainder};
@@ -208,14 +196,12 @@ ubigint ubigint::operator% (const ubigint& that) const {
 bool ubigint::operator== (const ubigint& that) const {
    if (uvalue.size() != that.uvalue.size())
    {
-      cout << uvalue.size() <<" fuck " << that.uvalue.size() << endl; // DEBUG
       return false;
    }
    for (uint8_t i = 0; i < uvalue.size(); i++)
    {
       if (uvalue[i] != that.uvalue[i])
       {
-         cout << "fuck2" << endl; // DEBUG
          return false;
       }
    }
