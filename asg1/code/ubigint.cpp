@@ -20,6 +20,10 @@ ubigint::ubigint (unsigned long that): uvalue (that) {
       ubi.push_back(digit);
       that /= 10;
    }
+   while (uvalue.back() == 0 && uvalue.size() > 0)
+   {
+      uvalue.pop_back();
+   }
 }
 
 ubigint::ubigint (const string& that) {
@@ -30,6 +34,10 @@ ubigint::ubigint (const string& that) {
       }
       auto it = uvalue.begin();
       uvalue.insert(it, digit - '0');
+   }
+   while (uvalue.back() == 0 && uvalue.size() > 0)
+   {
+      uvalue.pop_back();
    }
 }
 
@@ -53,6 +61,11 @@ ubigint ubigint::operator+ (const ubigint& that) const {
       }
       result.uvalue.push_back(total);
    }
+   result.uvalue.push_back(remainder);
+   while (result.uvalue.back() == 0 && result.uvalue.size() > 0)
+   {
+      result.uvalue.pop_back();
+   }
    DEBUGF ('u', *this << "+" << that);
    DEBUGF ('u', result);
    return result;
@@ -73,7 +86,7 @@ ubigint ubigint::operator- (const ubigint& that) const {
       }
       result.uvalue.push_back(total);
    }
-   while (result.uvalue.back() == 0 && result.uvalue.size() != 1)
+   while (result.uvalue.back() == 0 && result.uvalue.size() > 0)
    {
       result.uvalue.pop_back();
    }
@@ -101,7 +114,7 @@ ubigint ubigint::operator* (const ubigint& that) const {
       }
       result.uvalue[i + that.uvalue.size()] = carry;
    }
-   while (result.uvalue.back() == 0 && result.uvalue.size() != 1)
+   while (result.uvalue.back() == 0 && result.uvalue.size() > 0)
    {
       result.uvalue.pop_back();
    }
@@ -109,7 +122,8 @@ ubigint ubigint::operator* (const ubigint& that) const {
 }
 
 void ubigint::multiply_by_2() {
-   int carry = 0;
+   cout << *this << endl;
+   /* int carry = 0;
    int digit = 0;
    for (uint8_t i = 0; i < uvalue.size(); i++)
    {
@@ -126,6 +140,12 @@ void ubigint::multiply_by_2() {
    {
       uvalue.push_back(1);
    }
+   while (uvalue.back() == 0 && uvalue.size() > 0)
+   {
+      uvalue.pop_back();
+   } */
+   *this = *this + *this;
+   cout << *this << endl;
    return;
 }
 
@@ -138,7 +158,7 @@ void ubigint::divide_by_2() {
          uvalue[i] += 5;
       }
    }
-   while (uvalue.back() == 0)
+   while (uvalue.back() == 0 && uvalue.size() > 0)
    {
       uvalue.pop_back();
    }
