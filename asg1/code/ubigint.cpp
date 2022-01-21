@@ -28,7 +28,8 @@ ubigint::ubigint (const string& that) {
       if (not isdigit (digit)) {
          throw invalid_argument ("ubigint::ubigint(" + that + ")");
       }
-      uvalue.push_back(digit - '0');
+      auto it = uvalue.begin();
+      uvalue.insert(it, digit - '0');
    }
 }
 
@@ -44,7 +45,7 @@ ubigint ubigint::operator+ (const ubigint& that) const {
    for (uint8_t i = 0; i < length; i++)
    {
       total = uvalue[i] + that.uvalue[i] + remainder;
-      remainder = 1;
+      remainder = 0;
       if (total >= 10)
       {
          remainder = 1;
@@ -72,7 +73,7 @@ ubigint ubigint::operator- (const ubigint& that) const {
       }
       result.uvalue.push_back(total);
    }
-   while (result.uvalue.back() == 0)
+   while (result.uvalue.back() == 0 && result.uvalue.size() != 1)
    {
       result.uvalue.pop_back();
    }
@@ -82,10 +83,9 @@ ubigint ubigint::operator- (const ubigint& that) const {
 
 ubigint ubigint::operator* (const ubigint& that) const {
    ubigint result;
-   result.uvalue.reserve(uvalue.size() + that.uvalue.size());
-   for (uint8_t i = 0; i < result.uvalue.size(); i++)
+   for (uint8_t i = 0; i < (uvalue.size() + that.uvalue.size()); i++)
    {
-      result.uvalue[i] = 0;
+      result.uvalue.push_back(0);
    }
    int carry = 0;
    int digit = 0;
@@ -101,7 +101,7 @@ ubigint ubigint::operator* (const ubigint& that) const {
       }
       result.uvalue[i + that.uvalue.size()] = carry;
    }
-   while (result.uvalue.back() == 0)
+   while (result.uvalue.back() == 0 && result.uvalue.size() != 1)
    {
       result.uvalue.pop_back();
    }
