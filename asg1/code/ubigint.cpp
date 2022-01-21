@@ -36,15 +36,31 @@ ubigint::ubigint (const string& that) {
 ubigint ubigint::operator+ (const ubigint& that) const {
    ubigint result;
    uint8_t length = uvalue.size();
+   uint8_t shortl = that.uvalue.size();
    if (that.uvalue.size() > length)
    {
+      shortl = length;
       length = that.uvalue.size();
    }
    int remainder = 0;
    int total = 0;
    for (uint8_t i = 0; i < length; i++)
    {
-      total = uvalue[i] + that.uvalue[i] + remainder;
+      if (i < shortl)
+      {
+         total = uvalue[i] + that.uvalue[i] + remainder;
+      }
+      else
+      {
+         if (length == uvalue.size())
+         {
+            total = uvalue[i] + remainder;
+         }
+         else
+         {
+            total = that.uvalue[i] + remainder;
+         }
+      }
       remainder = 0;
       if (total >= 10)
       {
@@ -177,8 +193,12 @@ quo_rem udivide (const ubigint& dividend, const ubigint& divisor_) {
          remainder = remainder - divisor;
          quotient = quotient + power_of_2;
       }
+      cout << "pre-divisor: " << divisor << endl;
       divisor.divide_by_2();
+      cout << "post-divisor: " << divisor << endl;
+      cout << "pre-power: " << power_of_2 << endl;
       power_of_2.divide_by_2();
+      cout << "post-power: " << power_of_2 << endl;
    }
    DEBUGF ('/', "quotient = " << quotient);
    DEBUGF ('/', "remainder = " << remainder);
@@ -219,11 +239,11 @@ bool ubigint::operator< (const ubigint& that) const {
    }
    for (uint8_t i = uvalue.size(); i > 0; i--)
    {
-      if (uvalue[i] < that.uvalue[i])
+      if (uvalue[i - 1] < that.uvalue[i - 1])
       {
          return true;
       }
-      else if (uvalue[i] > that.uvalue[i])
+      else if (uvalue [i - 1] > that.uvalue[i - 1])
       {
          return false;
       }
