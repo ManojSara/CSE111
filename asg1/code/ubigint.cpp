@@ -94,7 +94,14 @@ ubigint ubigint::operator- (const ubigint& that) const {
    int total = 0;
    for (uint8_t i = 0; i < uvalue.size(); i++)
    {
-      total = uvalue[i] - that.uvalue[i] - remainder;
+      if (i < that.uvalue.size())
+      {
+         total = uvalue[i] - that.uvalue[i] - remainder;
+      }
+      else
+      {
+         total = uvalue[i] - remainder;
+      }
       remainder = 0;
       if (total < 0)
       {
@@ -147,9 +154,9 @@ void ubigint::divide_by_2() {
    for (uint8_t i = 0; i < uvalue.size(); i++)
    {
       uvalue[i] /= 2;
-      if (uvalue[i + 1] % 2 == 1)
+      if (i < (uvalue.size() - 1))
       {
-         if (i < (uvalue.size() - 1))
+         if (uvalue[i + 1] % 2 == 1)
          {
             uvalue[i] += 5;
          }
