@@ -13,13 +13,22 @@ using namespace std;
 #include "ubigint.h"
 
 ubigint::ubigint (unsigned long that): uvalue (that) {
+   while (uvalue.size() > 0)
+   {
+      uvalue.pop_back();
+   }
+   if (that == 0)
+   {
+      uvalue.push_back(0);
+      return;
+   }
    int digit = 0;
-   do
+   while (that != 0)
    {
       digit = that % 10;
       uvalue.push_back(digit);
       that /= 10;
-   } while (that != 0);
+   }
 }
 
 ubigint::ubigint (const string& that) {
@@ -130,27 +139,6 @@ ubigint ubigint::operator* (const ubigint& that) const {
 }
 
 void ubigint::multiply_by_2() {
-   /* int carry = 0;
-   int digit = 0;
-   for (uint8_t i = 0; i < uvalue.size(); i++)
-   {
-      digit = (uvalue[i] * 2) + carry;
-      carry = 0;
-      if (digit >= 10)
-      {
-         digit -= 10;
-         carry = 1;
-      }
-      uvalue[i] = digit;
-   }
-   if (carry)
-   {
-      uvalue.push_back(1);
-   }
-   while (uvalue.back() == 0 && uvalue.size() > 0)
-   {
-      uvalue.pop_back();
-   } */
    *this = *this + *this;
    return;
 }
@@ -193,12 +181,8 @@ quo_rem udivide (const ubigint& dividend, const ubigint& divisor_) {
          remainder = remainder - divisor;
          quotient = quotient + power_of_2;
       }
-      cout << "pre-divisor: " << divisor << endl;
       divisor.divide_by_2();
-      cout << "post-divisor: " << divisor << endl;
-      cout << "pre-power: " << power_of_2 << endl;
       power_of_2.divide_by_2();
-      cout << "post-power: " << power_of_2 << endl;
    }
    DEBUGF ('/', "quotient = " << quotient);
    DEBUGF ('/', "remainder = " << remainder);
