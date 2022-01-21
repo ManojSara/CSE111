@@ -23,16 +23,13 @@ ubigint::ubigint (unsigned long that): uvalue (that) {
 }
 
 ubigint::ubigint (const string& that) {
-   ubigvalue_t ubi;
-   uint8_t number = stoi(that, nullptr);
-   uint8_t digit = 0;
-   while (number != 0)
-   {
-      digit = number % 10;
-      ubi.push_back(digit);
-      number /= 10;
-   }
    DEBUGF ('~', "that = \"" << that << "\"");
+   for (char digit: that) {
+      if (not isdigit (digit)) {
+         throw invalid_argument ("ubigint::ubigint(" + that + ")");
+      }
+      uvalue.push_back(digit - '0');
+   }
 }
 
 ubigint ubigint::operator+ (const ubigint& that) const {
@@ -86,6 +83,10 @@ ubigint ubigint::operator- (const ubigint& that) const {
 ubigint ubigint::operator* (const ubigint& that) const {
    ubigint result;
    result.uvalue.reserve(uvalue.size() + that.uvalue.size());
+   for (uint8_t i = 0; i < result.uvalue.size(); i++)
+   {
+      result.uvalue[i] = 0;
+   }
    int carry = 0;
    int digit = 0;
    for (uint8_t i = 0; i < uvalue.size(); i++)
@@ -99,6 +100,10 @@ ubigint ubigint::operator* (const ubigint& that) const {
          carry = digit / 10;
       }
       result.uvalue[i + that.uvalue.size()] = carry;
+   }
+   while (result.uvalue.back() == 0)
+   {
+      result.uvalue.pop_back();
    }
    return result;
 }
@@ -223,10 +228,10 @@ ostream& operator<< (ostream& out, const ubigint& that) {
    for (auto rit = that.uvalue.rbegin();
         rit != that.uvalue.rend(); rit++)
    {
-      out << *rit;
+      out << static_cast<int>(*rit);
       inc++;
-      if (inc == 68) {
-         out << "/\n";
+      if (inc == 69) {
+         out << "\\" << endl;
          inc = 0;
       }
    }
