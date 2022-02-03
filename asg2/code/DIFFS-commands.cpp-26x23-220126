@@ -1,0 +1,16 @@
+===================================================================
+RCS file: RCS/commands.cpp,v
+retrieving revision 1.26
+retrieving revision 1.23
+diff -r1.26 -r1.23
+1c1
+< // $Id: commands.cpp,v 1.26 2022-01-26 16:10:27-08 - - $
+---
+> // $Id: commands.cpp,v 1.23 2022-01-14 18:48:50-08 - - $
+69,74d68
+<    DEBUGS ('l', 
+<       auto dirents = state.get_root()->get_dirents();
+<       for (const auto& entry: dirents) {
+<          cerr << "\"" << entry.first << "\"->" << entry.second << endl;
+<       }
+<     );
