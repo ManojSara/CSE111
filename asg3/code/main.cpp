@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstring>
 #include <regex>
 #include <unistd.h>
 
@@ -34,6 +35,47 @@ void scan_options (int argc, char** argv) {
    }
 }
 
+void read_stdin() {
+   regex comment_regex {R"(^\s*(#.*)?$)"};
+   regex key_value_regex {R"(^\s*(.*?)\s*=\s*(.*?)\s*$)"};
+   regex trimmed_regex {R"(^\s*([^=]+?)\s*$)"}; 
+   int linenum = 1;
+   for (;;) {
+      string line;
+      getline(cin, line);
+      if (cin.eof()) break;
+      smatch result;
+      cout << "-" << ": " << linenum << ": " << line << endl;
+      if (regex_search(line, result, comment_regex)) {
+         continue;
+      } else if (regex_search(line, result, key_value_regex)) {
+         if (result[1] == "" and result[2] == "") {
+            // Print all key and value pairs in lexicographic order
+            cout << "Only equal sign" << endl;
+         } else if (result[1] == "") {
+            // Print all key and value pairs with given value lexicographically
+            cout << "Only value" << endl;
+         } else if (result[2] == "") {
+            // Delete key and value pair from map
+            cout << "Key and equal sign" << endl;
+         } else {
+            // Replace key value field with new value if found,
+            // else insert lexicographically. Print new key and value pair regardless?
+            cout << "Normal line" << endl;
+         }
+         cout << "key  : " << result[1] << endl;
+         cout << "value: " << result[2] << endl;
+      } else if (regex_search(line, result, trimmed_regex)) {
+         // Print key and value pair, if not found print "key: key not found"
+         //cout << "query: " << result[1] << endl;
+         cout << "Only key" << endl;
+         cout << "key  : " << result[1] << endl;
+         cout << "value: " << result[2] << endl;
+      }
+      linenum++;
+   }
+}  
+
 int main (int argc, char** argv) {
    sys_info::execname (argv[0]);
    scan_options (argc, argv);
@@ -42,8 +84,15 @@ int main (int argc, char** argv) {
    regex trimmed_regex {R"(^\s*([^=]+?)\s*$)"}; 
    str_str_map test;
    //cout << test << endl;
+   if (optind == argc) {
+      read_stdin();
+   }
    for (char** argp = &argv[optind]; argp != &argv[argc]; ++argp) {
-      ifstream infile (*argp);
+      if (strcmp(*argp, "-") == 0) {
+         read_stdin();
+         continue;
+      }
+      ifstream infile(*argp);
       int linenum = 1;
       for (;;) {
          string line;
@@ -54,21 +103,28 @@ int main (int argc, char** argv) {
          if (regex_search(line, result, comment_regex)) {
             continue;
          } else if (regex_search(line, result, key_value_regex)) {
-            if (result[1] = "" and result[2] = "") {
+            if (result[1] == "" and result[2] == "") {
                // Print all key and value pairs in lexicographic order
-            } else if (result[1] = "") {
+               cout << "Only equal sign" << endl;
+            } else if (result[1] == "") {
                // Print all key and value pairs with given value lexicographically
-            } else if (result[2] = "") {
+               cout << "Only value" << endl;
+            } else if (result[2] == "") {
                // Delete key and value pair from map
+               cout << "Key and equal sign" << endl;
             } else {
                // Replace key value field with new value if found,
                // else insert lexicographically. Print new key and value pair regardless?
+               cout << "Normal line" << endl;
             }
             cout << "key  : " << result[1] << endl;
             cout << "value: " << result[2] << endl;
          } else if (regex_search(line, result, trimmed_regex)) {
             // Print key and value pair, if not found print "key: key not found"
             //cout << "query: " << result[1] << endl;
+            cout << "Only key" << endl;
+            cout << "key  : " << result[1] << endl;
+            cout << "value: " << result[2] << endl;
          }
          linenum++;
       }

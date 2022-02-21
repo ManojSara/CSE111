@@ -24,7 +24,25 @@ template <typename key_t, typename mapped_t, class less_t>
 typename listmap<key_t,mapped_t,less_t>::iterator
 listmap<key_t,mapped_t,less_t>::insert (const value_type& pair) {
    DEBUGF ('l', &pair << "->" << pair);
-   return iterator();
+   for (auto i = begin(); i != end(); ++i) {
+      if (not (xless(i.value.first, pair.first))) {
+         if (not (xless(pair.first, i->link->value.first))) {
+            i->second = pair.second;
+            return i;
+         } else {
+            node in = node(i, *i->link->prev, pair);
+            *i->link->prev = *in;
+            *in->link->prev->link->next = *in;
+            return *in;
+         }
+      }
+      if (i->link->next == end()) {
+         node in = node(end(), i, pair);
+         i->link->next = *in;
+         end()->link->prev = *in;
+         return *in;
+      }
+   }
 }
 
 //
