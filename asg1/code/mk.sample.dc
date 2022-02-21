@@ -1,0 +1,11 @@
+#!/bin/sh
+# $Id: mk.sample.dc,v 1.1 2022-01-03 15:42:29-08 - - $
+
+cp ../grading.score/test*.ydc .
+
+for test in test*.ydc
+do
+   echo $0: $test
+   /usr/bin/dc <$test 1>$test.dc.out 2>&1
+done
+
