@@ -25,24 +25,22 @@ typename listmap<key_t,mapped_t,less_t>::iterator
 listmap<key_t,mapped_t,less_t>::insert (const value_type& pair) {
    DEBUGF ('l', &pair << "->" << pair);
    for (auto i = begin(); i != end(); ++i) {
-      if (not (xless(i.value.first, pair.first))) {
-         if (not (xless(pair.first, i->link->value.first))) {
+      if (not (xless(i->first, pair.first))) {
+         if (not (xless(pair.first, i->first))) {
             i->second = pair.second;
             return i;
          } else {
-            node in = node(i, *i->link->prev, pair);
-            *i->link->prev = *in;
-            *in->link->prev->link->next = *in;
-            return *in;
+            node *in = node(i.where, i.where->prev, pair);
+            i.where->prev->next = in;
+            i.where->prev = in;
+            return --i;
          }
       }
-      if (i->link->next == end()) {
-         node in = node(end(), i, pair);
-         i->link->next = *in;
-         end()->link->prev = *in;
-         return *in;
-      }
    }
+   node *in = node(end().where, end().where->prev, pair);
+   end().where->prev->next = in;
+   end().where->prev = in;
+   return --end();
 }
 
 //
@@ -52,7 +50,12 @@ template <typename key_t, typename mapped_t, class less_t>
 typename listmap<key_t,mapped_t,less_t>::iterator
 listmap<key_t,mapped_t,less_t>::find (const key_type& that) {
    DEBUGF ('l', that);
-   return iterator();
+   for (auto i = begin(); i != end(); ++i) {
+      if ((not (xless(i->first, that))) and (not (xless(that, i->first)))) {
+         return i;
+      }
+   }
+   return end();
 }
 
 //
