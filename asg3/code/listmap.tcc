@@ -15,6 +15,7 @@
 template <typename key_t, typename mapped_t, class less_t>
 listmap<key_t,mapped_t,less_t>::~listmap() {
    DEBUGF ('l', reinterpret_cast<const void*> (this));
+   while (not empty()) erase (begin());
 }
 
 //
@@ -54,12 +55,12 @@ listmap<key_t,mapped_t,less_t>::find (const key_type& that) {
    DEBUGF ('l', that);
    node *temp = anchor()->next;
    while (temp != anchor()) {
-      if ((not (less(temp->first, that))) and (not (less(that, temp->first)))) {
+      if ((not (less(temp->value.first, that))) and (not (less(that, temp->value.first)))) {
          return iterator(temp);
       }
       temp = temp->next;
    }
-   return end();
+   return iterator(anchor());
 }
 
 //
