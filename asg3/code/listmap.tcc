@@ -1,4 +1,5 @@
 // $Id: listmap.tcc,v 1.15 2019-10-30 12:44:53-07 - - $
+// Manoj Sara (msara), Manas Sara (msara)
 
 #include "listmap.h"
 #include "debug.h"
@@ -55,7 +56,8 @@ listmap<key_t,mapped_t,less_t>::find (const key_type& that) {
    DEBUGF ('l', that);
    node *temp = anchor()->next;
    while (temp != anchor()) {
-      if ((not (less(temp->value.first, that))) and (not (less(that, temp->value.first)))) {
+      if ((not (less(temp->value.first, that))) and
+          (not (less(that, temp->value.first)))) {
          return iterator(temp);
       }
       temp = temp->next;

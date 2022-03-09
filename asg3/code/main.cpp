@@ -1,4 +1,5 @@
 // $Id: main.cpp,v 1.13 2021-02-01 18:58:18-08 - - $
+// Manoj Sara (msara), Manas Sara (msara)
 
 #include <cstdlib>
 #include <exception>
@@ -51,19 +52,16 @@ void read_stdin() {
          continue;
       } else if (regex_search(line, result, key_value_regex)) {
          if (result[1] == "" and result[2] == "") {
-            // Print all key and value pairs in lexicographic order
             for (auto i = test.begin(); i != test.end(); ++i) {
                cout << i->first << " = " << i->second << endl;
             }
          } else if (result[1] == "") {
-            // Print all key and value pairs with given value lexicographically
             for (auto i = test.begin(); i != test.end(); ++i) {
                if (i->second == result[2]) {
                   cout << i->first << " = " << i->second << endl;
                }
             } 
          } else if (result[2] == "") {
-            // Delete key and value pair from map
             str_str_map::iterator to_del = test.find(result[1]);
             if (to_del == test.end()) {
                cout << result[1] << ": key not found" << endl;
@@ -71,26 +69,25 @@ void read_stdin() {
                test.erase(to_del);
             }
          } else {
-            // Replace key value field with new value if found,
-            // else insert lexicographically. Print new key and value pair regardless?
             str_str_pair to_in(result[1], result[2]);
             str_str_map::iterator to_print = test.insert(to_in);
-            cout << to_print->first << " = " << to_print->second << endl;
+            cout << to_print->first << " = " << 
+                    to_print->second << endl;
          }
       } else if (regex_search(line, result, trimmed_regex)) {
-         // Print key and value pair, if not found print "key: key not found"
          str_str_map::iterator to_print = test.find(result[1]);
          if (to_print == test.end()) {
             cout << result[1] << ": key not found" << endl;
          } else {
-            cout << to_print->first << " = " << to_print->second << endl;
+            cout << to_print->first << " = " <<
+                    to_print->second << endl;
          }
       }
       linenum++;
    }
 
    str_str_map::iterator itor = test.begin();
-   if (itor) {
+   if (itor != test.end()) {
       test.erase (itor);
    }
 
@@ -100,13 +97,15 @@ void read_stdin() {
 int main (int argc, char** argv) {
    sys_info::execname (argv[0]);
    scan_options (argc, argv);
+   int status = 0;
+   string progname (basename (argv[0]));
    regex comment_regex {R"(^\s*(#.*)?$)"};
    regex key_value_regex {R"(^\s*(.*?)\s*=\s*(.*?)\s*$)"};
    regex trimmed_regex {R"(^\s*([^=]+?)\s*$)"}; 
    str_str_map test;
    if (optind == argc) {
       read_stdin();
-      return EXIT_SUCCESS;
+      return status;
    }
    for (char** argp = &argv[optind]; argp != &argv[argc]; ++argp) {
       bool dash = false;
@@ -114,6 +113,12 @@ int main (int argc, char** argv) {
          dash = true;
       }
       ifstream infile(*argp);
+      if (dash == false and infile.fail()) {
+         status = 1;
+         cerr << progname << ": " << *argp << ": " <<
+                 strerror (errno) << endl;
+         continue;
+      }
       int linenum = 1;
       for (;;) {
          string line;
@@ -130,19 +135,16 @@ int main (int argc, char** argv) {
             continue;
          } else if (regex_search(line, result, key_value_regex)) {
             if (result[1] == "" and result[2] == "") {
-               // Print all key and value pairs in lexicographic order
                for (auto i = test.begin(); i != test.end(); ++i) {
                   cout << i->first << " = " << i->second << endl;
                }
             } else if (result[1] == "") {
-               // Print all key and value pairs with given value lexicographically
                for (auto i = test.begin(); i != test.end(); ++i) {
                   if (i->second == result[2]) {
                      cout << i->first << " = " << i->second << endl;
                   }
                } 
             } else if (result[2] == "") {
-               // Delete key and value pair from map
                str_str_map::iterator to_del = test.find(result[1]);
                if (to_del == test.end()) {
                   cout << result[1] << ": key not found" << endl;
@@ -150,30 +152,32 @@ int main (int argc, char** argv) {
                   test.erase(to_del);
                }
             } else {
-               // Replace key value field with new value if found,
-               // else insert lexicographically. Print new key and value pair regardless?
                str_str_pair to_in(result[1], result[2]);
                str_str_map::iterator to_print = test.insert(to_in);
-               cout << to_print->first << " = " << to_print->second << endl;
+               cout << to_print->first << " = " <<
+                       to_print->second << endl;
             }
          } else if (regex_search(line, result, trimmed_regex)) {
-            // Print key and value pair, if not found print "key: key not found"
             str_str_map::iterator to_print = test.find(result[1]);
             if (to_print == test.end()) {
                cout << result[1] << ": key not found" << endl;
             } else {
-               cout << to_print->first << " = " << to_print->second << endl;
+               cout << to_print->first << " = " <<
+                       to_print->second << endl;
             }
          }
          linenum++;
       }
+      if (dash == false) {
+         infile.close();
+      }
    }
 
    str_str_map::iterator itor = test.begin();
-   if (itor) {
+   if (itor != test.end()) {
       test.erase (itor);
    }
 
-   return EXIT_SUCCESS;
+   return status;
 }
 
